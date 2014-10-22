@@ -24,7 +24,7 @@ window.Plugins.backgroundvideo.stop(successFn, errorFn);
 ```
 ###Other bits
 **Camera**
-'front' or 'back' to specify front or camera
+'front' or 'back' to specify camera direction.
 
 **File**
 - Outputs as mp4. You do not need to specify file extension.
