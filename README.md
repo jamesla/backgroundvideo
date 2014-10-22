@@ -1,6 +1,6 @@
 # Backgroundvideo
 
-### A simple Cordova/Phonegap plugin to capture video and then display it onscreen via a transparent overlay without affecting app functionality.
+##### A simple Cordova/Phonegap plugin to capture video and then display it onscreen via a transparent overlay without affecting app functionality.
 
 
 ##How to use
@@ -10,13 +10,13 @@ cordova plugin add io.iclue.backgroundvideo
 '''
 
 ###Usage
-'''
+```
 window.Plugins.backgroundvideo.start(successFn, errorFn, 'filename', 'front');
-'''
+```
 
-'''
+```
 window.Plugins.backgroundvideo.stop(successFn, errorFn);
-'''
+```
 
 ###Support
 Please use the github issue tracker and we will come back to you as soon as we can.
