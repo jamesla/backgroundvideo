@@ -22,16 +22,17 @@ window.Plugins.backgroundvideo.start(null, null, 'myvideo', 'front');
 ```
 window.Plugins.backgroundvideo.stop(successFn, errorFn);
 ```
-###Options
+###Other bits
 **Camera**
 'front' or 'back' to specify front or camera
 
 **File**
-Outputs as mp4. You do not need to specify file extension.
+*Outputs as mp4. You do not need to specify file extension.
+*Video files are saved to approot/tmp folder.
 
 ###Support
 Please use the github issue tracker and we will come back to you as soon as we can.
 
 ###Contribution
-There's lots of Android phones all with their own quirks so we'd love it if you could contribute and help us support all of the devices out there.
+There's lots of Android phones all with their own quirks so we'd love it if you could contribute and help us support all of the devices out there. Email me at james@iclue.io.
 
