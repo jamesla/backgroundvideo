@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="io.iclue.backgroundvideo" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>backgroundvideo</name>
+    <description>A simple Cordova/Phonegap plugin to capture video and then display it onscreen via a transparent overlay without affecting app functionality.</description>
+    <author>iclue</author>
+    
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>
+    
+    <js-module name="backgroundvideo" src="www/backgroundvideo.js">
+        <clobbers target="cordova.plugins.backgroundvideo" />
+    </js-module>
+    
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="backgroundvideo">
+                <param name="ios-package" value="backgroundvideo"/>
+            </feature>
+        </config-file>
+        
+        <header-file src="src/ios/backgroundvideo.h" />
+        <source-file src="src/ios/backgroundvideo.m" />
+        <framework src="MediaPlayer.framework" weak="true" />
+    </platform>
+    
+</plugin>
