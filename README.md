@@ -27,8 +27,8 @@ window.Plugins.backgroundvideo.stop(successFn, errorFn);
 'front' or 'back' to specify front or camera
 
 **File**
-*Outputs as mp4. You do not need to specify file extension.
-*Video files are saved to approot/tmp folder.
+- Outputs as mp4. You do not need to specify file extension.
+- Video files are saved to approot/tmp folder.
 
 ###Support
 Please use the github issue tracker and we will come back to you as soon as we can.
