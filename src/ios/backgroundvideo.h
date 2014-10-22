@@ -10,20 +10,17 @@
 }
 
 @property AVCaptureVideoPreviewLayer *previewLayer;
-@property (nonatomic, copy) NSString* callbackId;
 @property (nonatomic, retain) UIView* parentView;
 @property (nonatomic, retain) UIView* view;
 @property AVCaptureSession *session;
 @property AVCaptureMovieFileOutput *output;
 @property NSString *outputPath;
 @property NSString *token;
-@property NSString *mergedOutputPath;
 @property (assign) BOOL isFinished;
+@property NSString *camera;
 
+- (void)start:(CDVInvokedUrlCommand *)command;
+- (void)stop:(CDVInvokedUrlCommand *)command;
 
-- (NSString*)getFileName;
-- (void)StartRecording:(CDVInvokedUrlCommand *)command;
-- (void)StopRecording:(CDVInvokedUrlCommand *)command;
-- (void)SerializeAndUploadRecording:(CDVInvokedUrlCommand *)command;
 
 @end
