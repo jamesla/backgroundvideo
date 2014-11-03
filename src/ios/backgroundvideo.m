@@ -117,21 +117,28 @@
 {
     int fileNameIncrementer = 1;
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *libPath = [self getLibraryPath];
     
-    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@_%i%@",NSTemporaryDirectory(), self.token, fileNameIncrementer, FileExtension];
+    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
     
     while ([fileManager fileExistsAtPath:tempPath]) {
-        tempPath = [NSString stringWithFormat:@"%@%@_%i%@",NSTemporaryDirectory(), self.token, fileNameIncrementer, FileExtension];
+        tempPath = [NSString stringWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
         fileNameIncrementer++;
     }
     
     return tempPath;
 }
 
+-(NSString*)getLibraryPath
+{
+    NSArray *lib = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString *library = [lib objectAtIndex:0];
+    return [NSString stringWithFormat:@"%@/NoCloud/", library];
+    
+}
+
 -(AVCaptureDevice *)getCamera: (NSString *)camera
 {
-    
-    
     NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     AVCaptureDevice *captureDevice = nil;
     for (AVCaptureDevice *device in videoDevices)
