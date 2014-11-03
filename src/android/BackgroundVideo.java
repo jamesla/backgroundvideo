@@ -19,7 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
-import java.util.Locale;
 
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

@@ -9,7 +9,7 @@
     </engines>
 
     <keywords>video, background, transparent, overlay, recording, camera</keywords>
-	
+    
     <license>GPL3</license>
  
     
@@ -49,10 +49,10 @@
             <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
         </config-file>
 
-        <source-file src="src/android/BackgroundVideo.java" target-dir="io/iclue/backgroundvideo" />
-        <source-file src="src/android/VideoPreview.java" target-dir="io/iclue/backgroundvideo" />
-        <source-file src="src/android/VideoRecorder.java" target-dir="io/iclue/backgroundvideo" />
-        <source-file src="src/android/CameraHelper.java" target-dir="io/iclue/backgroundvideo" />
+        <source-file src="src/android/BackgroundVideo.java" target-dir="src/io/iclue/backgroundvideo" />
+        <source-file src="src/android/VideoPreview.java" target-dir="src/io/iclue/backgroundvideo" />
+        <source-file src="src/android/VideoRecorder.java" target-dir="src/io/iclue/backgroundvideo" />
+        <source-file src="src/android/CameraHelper.java" target-dir="src/io/iclue/backgroundvideo" />
      </platform>
      
 </plugin>
