@@ -147,7 +147,7 @@ public class BackgroundVideo extends CordovaPlugin {
     @Override
     public void onPause(boolean multitasking) {
         Log.d(TAG, "onPause - stopping video");
-        this.Stop();
+        //this.Stop(); //? - do we autostop or leave for wrapper?
         super.onPause(multitasking);
     }
 
