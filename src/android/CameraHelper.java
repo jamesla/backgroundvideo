@@ -1,9 +1,11 @@
 package io.iclue.backgroundvideo;
 
-import java.util.List;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
 
-public class CameraHelper {
+import java.util.List;
+
+class CameraHelper {
     public static Camera.Size getPreviewSize(Camera.Parameters cp) {
         Camera.Size size = cp.getPreferredPreviewSizeForVideo();
         
@@ -27,6 +29,20 @@ public class CameraHelper {
         }
 
         return small;
+    }
+
+    public static boolean sizeSupported (Camera.Parameters cp, CamcorderProfile profile) {
+        List<Camera.Size> sl = cp.getSupportedVideoSizes();
+
+        if (sl == null)
+            sl = cp.getSupportedPictureSizes();
+
+        for(Camera.Size s : sl) {
+            if (profile.videoFrameWidth == s.width && profile.videoFrameHeight == s.height)
+                return true;
+        }
+
+        return false;
     }
 
     public static Camera getDefaultCamera(int position) {

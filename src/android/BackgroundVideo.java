@@ -1,43 +1,28 @@
 package io.iclue.backgroundvideo;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.os.Build;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.RelativeLayout;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.PluginResult;
-import org.apache.cordova.PluginResult.Status;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
 
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class BackgroundVideo extends CordovaPlugin {
-    public static final String TAG = "BACKGROUND_VIDEO";
-    public static final String ACTION_START_RECORDING = "start";
-    public static final String ACTION_STOP_RECORDING = "stop";
+    private static final String TAG = "BACKGROUND_VIDEO";
+    private static final String ACTION_START_RECORDING = "start";
+    private static final String ACTION_STOP_RECORDING = "stop";
+    private static final String FILE_EXTENSION = ".mp4";
+    private String FILE_PATH = "";
+    private String FILE_NAME = "";
 
-    String FILE_PATH = "";
-    String FILE_NAME = "";
-    
-    static final String FILE_EXTENTION = ".mp4";
-    static final String FILE_SUFFIX = "-combined";
-
-    private final static float opacity = 0.3f;
-
-    protected RelativeLayout myRelativeLayout;
-    protected VideoPreview myVideoPreview;
-    protected VideoRecorder myVideoRecorder;
+    //private final static float opacity = 0.3f;
+    private VideoOverlay videoOverlay;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -49,116 +34,89 @@ public class BackgroundVideo extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         try {
-            if (ACTION_START_RECORDING.equals(action)) {
+        	Log.d(TAG, "ACTION: " + action);
+
+            if(ACTION_START_RECORDING.equals(action)) {
                 FILE_NAME = args.getString(0);
                 String CAMERA_FACE = args.getString(1);
-                    
-                if (myVideoRecorder != null && myVideoRecorder.isRecording == true) {
-                    Log.d(TAG, "Already Recording");
-                    return true;
-                }
 
-                if (myVideoRecorder == null) {
-                    myVideoRecorder = new VideoRecorder();
-                }
-                myVideoRecorder.SetCameraFacing(CAMERA_FACE);
-
-                if (myRelativeLayout == null) {
-                    final Activity act = cordova.getActivity();
-                    final WebView wv = webView;
-                    
-                    myVideoPreview = new VideoPreview(act, getFilePath(), this.myVideoRecorder, callbackContext);
-                    
-                    myRelativeLayout = new RelativeLayout(act);
-                    myRelativeLayout.addView(myVideoPreview);
-                    myRelativeLayout.setAlpha(opacity);
-
+                if(videoOverlay == null) {
+                    videoOverlay = new VideoOverlay(cordova.getActivity(), getFilePath());
+                    videoOverlay.setCameraFacing(CAMERA_FACE);
                     cordova.getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
-                            wv.setKeepScreenOn(true);
-                            act.addContentView(myRelativeLayout, new ViewGroup.LayoutParams(wv.getWidth(), wv.getHeight()));
+                        @Override
+						public void run() {
+                            webView.setKeepScreenOn(true);
+
+                            if(videoOverlay.getViewType() == PreviewType.TEXTURE_VIEW) {
+                                cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
+                            } else {
+                                // Set to 1 because we cannot have a transparent surface view, therefore view is not shown / tiny.
+                                cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(1, 1));
+                            }
                         }
                     });
                 } else {
-                    SetSurfaceVisibility(View.VISIBLE);
-                    myVideoPreview.myCallbackContext = callbackContext;
-                    myVideoPreview.onSurfaceTextureAvailable(myVideoPreview.getSurfaceTexture(), myVideoPreview.getWidth(), myVideoPreview.getHeight());
-                }
+                    videoOverlay.setCameraFacing(CAMERA_FACE);
+                    videoOverlay.setFilePath(getFilePath());
 
-                PluginResult pr = new PluginResult(Status.NO_RESULT);
-                pr.setKeepCallback(true);
-                callbackContext.sendPluginResult(pr);
+                    cordova.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() { videoOverlay.startPreview(true); }
+                    });
+                }
                 return true;
             }
 
-            if (ACTION_STOP_RECORDING.equals(action)) {
-                this.Stop();
+            if(ACTION_STOP_RECORDING.equals(action)) {
+                if(videoOverlay != null) {
+                    cordova.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() { videoOverlay.onPause(); }
+                    });
+                }
                 return true;
             }
 
             callbackContext.error("INVALID ACTION");
             return false;
         } catch(Exception e) {
-            Log.d(TAG, "ERROR: " + e.getMessage());
+            Log.d(TAG, "ERROR: " + e.getMessage(), e);
             callbackContext.error(TAG + " : " + e.getMessage());
             return false;
         }
     }
 
-
-    private void SetSurfaceVisibility(final int visibility){
-        if (myVideoPreview == null)
-            return;
-
-        if (myVideoPreview.getVisibility() != visibility)
-            cordova.getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    myVideoPreview.setVisibility(visibility);
-                }
-            });
-    }
-
-
     private String getFilePath(){
-        return  FILE_PATH + getNextFileName() + FILE_EXTENTION;
+        return  FILE_PATH + getNextFileName() + FILE_EXTENSION;
     }
 
     private String getNextFileName(){
         int i=1;
         String tmpFileName = FILE_NAME;
-        while(new File(FILE_PATH + tmpFileName + FILE_EXTENTION).exists()) {
+        while(new File(FILE_PATH + tmpFileName + FILE_EXTENSION).exists()) {
             tmpFileName = FILE_NAME + '_' + i;
             i++;
         }
         return tmpFileName;
     }
 
-
-    private void Stop(){
-        if (myVideoRecorder != null){
-            myVideoRecorder.Stop();
-        }
-
-        SetSurfaceVisibility(View.GONE);
-    }
-
-
     //Plugin Method Overrides
     @Override
     public void onPause(boolean multitasking) {
-        Log.d(TAG, "onPause - stopping video");
-        //this.Stop(); //? - do we autostop or leave for wrapper?
+        videoOverlay.onPause();
         super.onPause(multitasking);
     }
 
     @Override
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
+        videoOverlay.onResume();
     }
 
     @Override
     public void onDestroy() {
-        this.Stop();
+       videoOverlay.onDestroy();
         super.onDestroy();
     }
 
