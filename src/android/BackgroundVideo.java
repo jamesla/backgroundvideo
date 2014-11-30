@@ -104,19 +104,22 @@ public class BackgroundVideo extends CordovaPlugin {
     //Plugin Method Overrides
     @Override
     public void onPause(boolean multitasking) {
-        videoOverlay.onPause();
+        if(videoOverlay != null)
+            videoOverlay.onPause();
         super.onPause(multitasking);
     }
 
     @Override
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
-        videoOverlay.onResume();
+        if(videoOverlay != null)
+            videoOverlay.onResume();
     }
 
     @Override
     public void onDestroy() {
-       videoOverlay.onDestroy();
+        if(videoOverlay != null)
+            videoOverlay.onDestroy();
         super.onDestroy();
     }
 
