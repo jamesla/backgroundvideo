@@ -39,7 +39,7 @@ public class VideoOverlay extends ViewGroup {
             int itemWidth = (r - l) / numChildren;
             for (int i = 0; i < numChildren; i++) {
                 View v = getChildAt(i);
-                v.layout(itemWidth * i, 0, (i + 1) * itemWidth, b - t); //(Fixed bug mentioned by Nathaniel Wolf in the comments below)
+                v.layout(itemWidth * i, 0, (i + 1) * itemWidth, b - t);
             }
         }
     }
@@ -144,11 +144,10 @@ public class VideoOverlay extends ViewGroup {
 
     public void initPreview(int height, int width) {
         if (camera != null) {
-//            Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.Parameters parameters = camera.getParameters();
 
-            //TODO: should probably check size is OK.
-            parameters.setPreviewSize(width, height);
+            Camera.Size previewSize = CameraHelper.getPreviewSize(parameters);
+            parameters.setPreviewSize(previewSize.width, previewSize.height);
 
             parameters.setRotation(90);
 
@@ -185,7 +184,7 @@ public class VideoOverlay extends ViewGroup {
 //        //Not sure on this one, seems to give odd results on some phones
 //        //cp.setRecordingHint(true);
 //        cp.setRotation(90);
-//        cp.set("cam_mode", 1);
+//        params.set("cam_mode", 1);
 //        myCamera.setDisplayOrientation(90);
 
         recorder.setProfile(profile);
@@ -228,7 +227,7 @@ public class VideoOverlay extends ViewGroup {
     }
 
     public void onResume() {
-       addView(preview.getView());
+        addView(preview.getView());
         viewIsAttached = true;
     }
 
