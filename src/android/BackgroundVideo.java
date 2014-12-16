@@ -2,6 +2,7 @@ package io.iclue.backgroundvideo;
 
 import android.util.Log;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -23,6 +24,7 @@ public class BackgroundVideo extends CordovaPlugin {
 
     //private final static float opacity = 0.3f;
     private VideoOverlay videoOverlay;
+    private RelativeLayout relativeLayout;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -34,7 +36,7 @@ public class BackgroundVideo extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         try {
-        	Log.d(TAG, "ACTION: " + action);
+            Log.d(TAG, "ACTION: " + action);
 
             if(ACTION_START_RECORDING.equals(action)) {
                 FILE_NAME = args.getString(0);
@@ -43,16 +45,30 @@ public class BackgroundVideo extends CordovaPlugin {
                 if(videoOverlay == null) {
                     videoOverlay = new VideoOverlay(cordova.getActivity(), getFilePath());
                     videoOverlay.setCameraFacing(CAMERA_FACE);
+
+                    //NOTE: Now wrapping view in relative layout because GT-I9300 testing
+                    //      the overlay required wrapping for setAlpha to work.
+                    if(videoOverlay.getViewType() == PreviewType.TEXTURE_VIEW) {
+                        relativeLayout = new RelativeLayout(cordova.getActivity());
+                        relativeLayout.setAlpha(0.2f);
+                    }
+
                     cordova.getActivity().runOnUiThread(new Runnable() {
                         @Override
-						public void run() {
+                        public void run() {
                             webView.setKeepScreenOn(true);
-
-                            if(videoOverlay.getViewType() == PreviewType.TEXTURE_VIEW) {
-                                cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
-                            } else {
-                                // Set to 1 because we cannot have a transparent surface view, therefore view is not shown / tiny.
-                                cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(1, 1));
+                            try {
+                                if(videoOverlay.getViewType() == PreviewType.TEXTURE_VIEW) {
+                                    relativeLayout.addView(videoOverlay, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
+                                    cordova.getActivity().addContentView(relativeLayout, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
+                                    //cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
+                                } else {
+                                    // Set to 1 because we cannot have a transparent surface view, therefore view is not shown / tiny.
+                                    cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(1, 1));
+                                }
+                            } catch(Exception e) {
+                                Log.e(TAG, "Error during preview create", e);
+                                callbackContext.error(TAG + ": " + e.getMessage());
                             }
                         }
                     });
@@ -62,7 +78,14 @@ public class BackgroundVideo extends CordovaPlugin {
 
                     cordova.getActivity().runOnUiThread(new Runnable() {
                         @Override
-                        public void run() { videoOverlay.startPreview(true); }
+                        public void run() {
+                            try {
+                                videoOverlay.startPreview(true);
+                            } catch(Exception e) {
+                                Log.e(TAG, "Error during preview create", e);
+                                callbackContext.error(TAG + ": " + e.getMessage());
+                            }
+                        }
                     });
                 }
                 return true;
@@ -72,17 +95,20 @@ public class BackgroundVideo extends CordovaPlugin {
                 if(videoOverlay != null) {
                     cordova.getActivity().runOnUiThread(new Runnable() {
                         @Override
-                        public void run() { videoOverlay.onPause(); }
+                        public void run() {
+                            if(videoOverlay != null)
+                                videoOverlay.onPause();
+                        }
                     });
                 }
                 return true;
             }
 
-            callbackContext.error("INVALID ACTION");
+            callbackContext.error(TAG + ": INVALID ACTION");
             return false;
         } catch(Exception e) {
-            Log.d(TAG, "ERROR: " + e.getMessage(), e);
-            callbackContext.error(TAG + " : " + e.getMessage());
+            Log.e(TAG, "ERROR: " + e.getMessage(), e);
+            callbackContext.error(TAG + ": " + e.getMessage());
             return false;
         }
     }

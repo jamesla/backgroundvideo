@@ -25,19 +25,25 @@ public class TextureViewPreview implements Preview, TextureView.SurfaceTextureLi
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         view.setClickable(false);
         view.setSurfaceTextureListener(this);
-        view.setAlpha(opacity);
+
+        //Note done in backgroundvideo on the wrapping view.
+        //view.setAlpha(opacity);
     }
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
         Log.d(TAG, "Creating Texture Created");
-        this.surface = surfaceTexture;
-        overlay.previewAvailable();
-        overlay.initPreview(height, width);
+        try {
+            this.surface = surfaceTexture;
+            overlay.previewAvailable();
+            overlay.initPreview(height, width);
 
-        //TODO: Once Preview is working.
-        if(startRecordingOnCreate) {
-            overlay.startRecording();
+
+            if (startRecordingOnCreate) {
+                overlay.startRecording();
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "Error start camera", ex);
         }
     }
 

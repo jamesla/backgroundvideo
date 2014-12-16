@@ -23,6 +23,7 @@ public class VideoOverlay extends ViewGroup {
 
     private boolean inPreview = false;
     private boolean viewIsAttached = false;
+    private Camera.Size currentSize;
 
 
     public VideoOverlay(Context context, String filePath) {
@@ -60,10 +61,12 @@ public class VideoOverlay extends ViewGroup {
             throw new NullPointerException("Cannot start recording, we don't have a camera!");
 
         Camera.Parameters cameraParameters = camera.getParameters();
-        cameraParameters.setRotation(90);
-        camera.setParameters(cameraParameters);
 
-        camera.stopPreview(); //Not sure about this one.
+        if(currentSize == null){
+            setCameraParameters(camera, cameraParameters);
+        }
+
+        camera.stopPreview(); //Apparently helps with freezing issue on some Samsung devices.
         camera.unlock();
 
         try {
@@ -73,7 +76,7 @@ public class VideoOverlay extends ViewGroup {
             recorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
             recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
-            setProfile(cameraParameters);
+            setProfile(recorder, cameraParameters);
             recorder.setOutputFile(filePath);
             recorder.setOrientationHint(90);
 
@@ -146,23 +149,28 @@ public class VideoOverlay extends ViewGroup {
         if (camera != null) {
             Camera.Parameters parameters = camera.getParameters();
 
-            Camera.Size previewSize = CameraHelper.getPreviewSize(parameters);
-            parameters.setPreviewSize(previewSize.width, previewSize.height);
+            setCameraParameters(camera, parameters);
 
-            parameters.setRotation(90);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                parameters.setRecordingHint(true);
-            }
-
-            camera.setParameters(parameters);
-            camera.setDisplayOrientation(90);
             camera.startPreview();
             inPreview = true;
         }
     }
 
-    private void setProfile(Camera.Parameters params){
+    private void setCameraParameters(Camera camera, Camera.Parameters parameters){
+        currentSize = CameraHelper.getPreviewSize(parameters);
+        parameters.setPreviewSize(currentSize.width, currentSize.height);
+
+        parameters.setRotation(90);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            parameters.setRecordingHint(true);
+        }
+
+        camera.setParameters(parameters);
+        camera.setDisplayOrientation(90);
+    }
+
+    private void setProfile(MediaRecorder mediaRecorder, Camera.Parameters parameters){
         CamcorderProfile profile;
 
         if(CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_LOW)) {
@@ -171,23 +179,15 @@ public class VideoOverlay extends ViewGroup {
             profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_HIGH);
         }
 
-        //Sometimes the profile is incorrect - (Front Camera)
-        if (!CameraHelper.sizeSupported(params, profile)) {
-            Camera.Size size = CameraHelper.getLowestResolution(params);
-            profile.videoFrameWidth = size.width;
-            profile.videoFrameHeight = size.height;
+        if(currentSize == null){
+            currentSize = CameraHelper.getLowestResolution(parameters);
         }
 
-//        NOTE: Check if we need to set other params?
-//        Camera.Size previewSize = CameraHelper.getPreviewSize(cp);
-//        cp.setPreviewSize(previewSize.width, previewSize.height);
-//        //Not sure on this one, seems to give odd results on some phones
-//        //cp.setRecordingHint(true);
-//        cp.setRotation(90);
-//        params.set("cam_mode", 1);
-//        myCamera.setDisplayOrientation(90);
 
-        recorder.setProfile(profile);
+        profile.videoFrameWidth = currentSize.width;
+        profile.videoFrameHeight = currentSize.height;
+
+        mediaRecorder.setProfile(profile);
     }
 
 
