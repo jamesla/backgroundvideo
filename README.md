@@ -10,17 +10,17 @@ cordova plugin add io.iclue.backgroundvideo
 ```
 ###Usage
 ```
-window.Plugins.backgroundvideo.start(successfn, errorfn, filename, cameradirection);
+window.Plugin.backgroundvideo.start(successfn, errorfn, filename, cameradirection);
 ```
 
 ###Getting started
 ######start recording
 ```
-window.Plugins.backgroundvideo.start(null, null, 'myvideo', 'front');
+window.Plugin.backgroundvideo.start(null, null, 'myvideo', 'front');
 ```
 ######stop recording
 ```
-window.Plugins.backgroundvideo.stop(successFn, errorFn);
+window.Plugin.backgroundvideo.stop(successFn, errorFn);
 ```
 ###Other bits
 **Camera**
