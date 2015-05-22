@@ -102,7 +102,10 @@ public class VideoOverlay extends ViewGroup {
             tempRecorder.stop();
             tempRecorder.reset();
             tempRecorder.release();
-            camera.lock();
+
+            if(camera != null) {
+                camera.lock();
+            }
         }
     }
 
@@ -238,8 +241,9 @@ public class VideoOverlay extends ViewGroup {
             stopPreview();
             preview.startRecordingWhenAvailable(false);
             Log.d(TAG, "removing View");
-            if(preview != null)
+            if(preview != null) {
                 removeView(preview.getView());
+            }
             viewIsAttached = false;
         } catch (IOException e) {
             Log.e(TAG, "Error in OnPause - Could not stop camera", e);

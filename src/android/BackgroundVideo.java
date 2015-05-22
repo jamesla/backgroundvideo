@@ -1,5 +1,6 @@
 package io.iclue.backgroundvideo;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -53,14 +54,20 @@ public class BackgroundVideo extends CordovaPlugin {
                         relativeLayout.setAlpha(0.2f);
                     }
 
+                    //Get screen dimensions
+                    DisplayMetrics displaymetrics = new DisplayMetrics();
+                    cordova.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                    final int height = displaymetrics.heightPixels;
+                    final int width = displaymetrics.widthPixels;
+
                     cordova.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            webView.setKeepScreenOn(true);
+//                            webView.setKeepScreenOn(true); //do via another plugin?
                             try {
                                 if(videoOverlay.getViewType() == PreviewType.TEXTURE_VIEW) {
-                                    relativeLayout.addView(videoOverlay, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
-                                    cordova.getActivity().addContentView(relativeLayout, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
+                                    relativeLayout.addView(videoOverlay, new ViewGroup.LayoutParams(width, height));
+                                    cordova.getActivity().addContentView(relativeLayout, new ViewGroup.LayoutParams(width, height));
                                     //cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
                                 } else {
                                     // Set to 1 because we cannot have a transparent surface view, therefore view is not shown / tiny.
