@@ -12,6 +12,4 @@ var backgroundvideo = {
 };
 
 module.exports = backgroundvideo;
-
-//todo:fixthis
-// window.Plugin.backgroundvideo = backgroundvideo;
+window.Plugin.backgroundvideo = backgroundvideo;
