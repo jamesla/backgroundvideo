@@ -1,5 +1,6 @@
 package io.iclue.backgroundvideo;
 
+import android.view.WindowManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -63,7 +64,7 @@ public class BackgroundVideo extends CordovaPlugin {
                     cordova.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            webView.setKeepScreenOn(true); //do via another plugin?
+                            cordova.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                             try {
                                 if(videoOverlay.getViewType() == PreviewType.TEXTURE_VIEW) {
                                     relativeLayout.addView(videoOverlay, new ViewGroup.LayoutParams(width, height));
