@@ -108,6 +108,7 @@ public class BackgroundVideo extends CordovaPlugin {
                         }
                     });
                 }
+                callbackContext.success(getFilePath());
                 return true;
             }
 
