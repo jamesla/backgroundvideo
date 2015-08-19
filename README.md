@@ -6,7 +6,7 @@
 ##How to use
 ###Install
 ```
-cordova plugin add io.iclue.backgroundvideo
+cordova plugin add https://github.com/jamesla/backgroundvideo.git
 ```
 ###Usage
 ```
