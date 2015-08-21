@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="io.cordova.hellocordova" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>background video test</name>
+    <description>
+        A sample app for tesing background video plugin.
+    </description>
+    <author email="support@iclue.io" href="https://github.com/jamesla/backgroundvideo">
+        Iclue Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <plugin name="io.iclue.backgroundvideo" spec="https://github.com/jamesla/backgroundvideo.git" />
+</widget>

@@ -1,0 +1,19 @@
+{
+    "io.iclue.backgroundvideo": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jamesla/backgroundvideo.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-console": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-console"
+        },
+        "is_top_level": true,
+        "variables": {}
+    }
+}
