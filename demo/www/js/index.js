@@ -56,8 +56,7 @@ var app = {
         cordova.plugins.backgroundvideo.start('StartBtnTest-' + facing, facing, app.yay, app.boo);
     },
     stop: function() {
-        var file = cordova.plugins.backgroundvideo.stop(app.yay, app.boo);
-        console.log('filepath =', file);
+        cordova.plugins.backgroundvideo.stop(app.yay, app.boo);
     },
     exit: function() {
         navigator.app.exitApp();

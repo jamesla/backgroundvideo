@@ -6,21 +6,21 @@
 ##How to use
 ###Install
 ```
-cordova plugin add https://github.com/jamesla/backgroundvideo.git
+cordova plugin add io.iclue.backgroundvideo
 ```
 ###Usage
 ```
-window.Plugin.backgroundvideo.start(filename, cameradirection, successfn, errorfn);
+cordova.plugins.backgroundvideo.start(filename, cameradirection, successfn, errorfn);
 ```
 
 ###Getting started
 ######start recording
 ```
-window.Plugin.backgroundvideo.start('myvideo', 'front', null, null);
+cordova.plugins.backgroundvideo.start('myvideo', 'front', null, null);
 ```
 ######stop recording
 ```
-window.Plugin.backgroundvideo.stop(successFn, errorFn);
+cordova.plugins.backgroundvideo.stop(successFn, errorFn);
 ```
 ###Other bits
 **Camera**
@@ -28,11 +28,21 @@ window.Plugin.backgroundvideo.stop(successFn, errorFn);
 
 **File**
 - Outputs as mp4. You do not need to specify file extension.
-- Video files are saved to approot/tmp folder.
+- Video files are saved to approot/tmp folder (cordova.plugins.backgroundvideo.stop() will return the file path).
 
 ###Support
 Please use the github issue tracker and we will come back to you as soon as we can.
 
 ###Contribution
-There's lots of Android phones all with their own quirks so we'd love it if you could contribute and help us support all of the devices out there. Email me at james@iclue.io.
+There's lots of Android phones all with their own quirks so we'd love it if you could contribute and help us support all of the devices out there. 
 
+##How to run the demo
+###
+```
+git clone https://github.com/jamesla/backgroundvideo.git
+cd backgroundvideo/demo
+cordova plugin add io.iclue.backgroundvideo
+cordova plugin add cordova-plugin-console
+cordova platform add ios
+cordova run --device
+```

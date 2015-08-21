@@ -93,7 +93,6 @@
     [rootLayer insertSublayer:self.previewLayer atIndex:0];
     
     //go
-    NSLog(@"it started recording");
     [session startRunning];
     [output startRecordingToOutputFileURL:fileURI recordingDelegate:self ];
     
@@ -104,10 +103,7 @@
 
 - (void)stop:(CDVInvokedUrlCommand *)command
 {
-    NSLog(@"stopping the recording");
-    //[self.previewLayer removeFromSuperlayer];
     [output stopRecording];
-    //[session stopRunning];
     self.view.alpha = 0;
     
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:outputPath];
