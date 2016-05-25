@@ -49,7 +49,7 @@ public class VideoOverlay extends ViewGroup {
         return recorder != null;
     }
 
-    public void startRecording() {
+    public void startRecording() throws Exception {
         if (isRecording()) {
             Log.d(TAG, "Already Recording!");
             return;
@@ -73,6 +73,7 @@ public class VideoOverlay extends ViewGroup {
             recorder = new MediaRecorder();
             recorder.setCamera(camera);
 
+
             recorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
             recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
@@ -84,12 +85,13 @@ public class VideoOverlay extends ViewGroup {
             recorder.prepare();
             recorder.start();
         }
-        catch (IOException e) {
+        catch (Exception e){
             recorder.reset();
             recorder.release();
             recorder=null;
             camera.lock();
             Log.e(TAG, "Could not start recording! MediaRecorder Error", e);
+            throw e;
         }
     }
 
@@ -99,7 +101,12 @@ public class VideoOverlay extends ViewGroup {
         if(recorder != null) {
             MediaRecorder tempRecorder = recorder;
             recorder = null;
-            tempRecorder.stop();
+            try {
+                tempRecorder.stop();
+            } catch (Exception e){
+                //This occurs when the camera failed to start and then stop is called
+                Log.e(TAG, "Could not call stopRecording.", e);
+            }
             tempRecorder.reset();
             tempRecorder.release();
 
@@ -203,7 +210,11 @@ public class VideoOverlay extends ViewGroup {
                 previewAvailable();
                 initPreview(getHeight(), getWidth());
                 if (startRecording)
-                    startRecording();
+                    try {
+                        startRecording();
+                    } catch (Exception e) {
+                        Log.e(TAG, "Could not start recording", e);
+                    }
                 inPreview = true;
             }
         }

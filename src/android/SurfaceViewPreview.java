@@ -33,7 +33,11 @@ public class SurfaceViewPreview implements Preview, SurfaceHolder.Callback {
         overlay.previewAvailable();
 
         if(startRecordingOnCreate) {
-            overlay.startRecording();
+            try {
+                overlay.startRecording();
+            } catch (Exception e) {
+                Log.e(TAG, "Error start recording", e);
+            }
         }
     }
 
