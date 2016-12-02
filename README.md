@@ -10,13 +10,13 @@ cordova plugin add https://github.com/jamesla/backgroundvideo.git
 ```
 ###Usage
 ```
-cordova.plugins.backgroundvideo.start(filename, cameradirection, successfn, errorfn);
+cordova.plugins.backgroundvideo.start(filename, cameradirection, shouldRecordAudio, successfn, errorfn);
 ```
 
 ###Getting started
 ######start recording
 ```
-cordova.plugins.backgroundvideo.start('myvideo', 'front', null, null);
+cordova.plugins.backgroundvideo.start('myvideo', 'front', true, null, null);
 ```
 ######stop recording
 ```
