@@ -27,6 +27,8 @@
 
     self.token = [command.arguments objectAtIndex:0];
     self.camera = [command.arguments objectAtIndex:1];
+    bool shouldRecord = [command argumentAtIndex:2];
+    
 
     //get rid of the old dumb view (causes issues if the app is resumed)
     self.parentView = nil;
@@ -71,12 +73,15 @@
     if ( [session canAddOutput:output])
         [session addOutput:output];
 
+    if(shouldRecord){
+        
     //Capture audio input
     AVCaptureDevice *audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
     AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioCaptureDevice error:nil];
 
     if ([session canAddInput:audioInput])
         [session addInput:audioInput];
+    }
 
     //Capture device input
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:inputDevice error:nil];
