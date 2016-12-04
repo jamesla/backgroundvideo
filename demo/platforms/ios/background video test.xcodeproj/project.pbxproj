@@ -38,9 +38,9 @@
 		7E7966E51810823500FA85AD /* icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DB1810823500FA85AD /* icon-76@2x.png */; };
 		7E7966E61810823500FA85AD /* icon-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DC1810823500FA85AD /* icon-small.png */; };
 		7E7966E71810823500FA85AD /* icon-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E7966DD1810823500FA85AD /* icon-small@2x.png */; };
-		B4DC252873E24844A05AF6DC /* backgroundvideo.m in Sources */ = {isa = PBXBuildFile; fileRef = DC85788B904A47E8AE518980 /* backgroundvideo.m */; };
-		D2FFF23D814F428AAB610DE9 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10065D7CD1F8481590D2460B /* MediaPlayer.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
+		8FA64BE4965B43DC8D634087 /* backgroundvideo.m in Sources */ = {isa = PBXBuildFile; fileRef = F3D64FD4E8194650928F869D /* backgroundvideo.m */; };
+		0B10F977A6C6499E8EEEE2EB /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 668B299EBA454473A01C9889 /* MediaPlayer.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,7 +61,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		10065D7CD1F8481590D2460B /* MediaPlayer.framework */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* background video test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "background video test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,12 +100,13 @@
 		7E7966DD1810823500FA85AD /* icon-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-small@2x.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* background video test-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "background video test-Info.plist"; path = "../background video test-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x~iphone.png"; sourceTree = "<group>"; };
-		DC85788B904A47E8AE518980 /* backgroundvideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = backgroundvideo.m; path = io.iclue.backgroundvideo/backgroundvideo.m; sourceTree = "<group>"; };
 		EB87FDF21871DA7A0020F90C /* merges */ = {isa = PBXFileReference; lastKnownFileType = folder; name = merges; path = ../../merges; sourceTree = "<group>"; };
 		EB87FDF31871DA8E0020F90C /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../../www; sourceTree = "<group>"; };
 		EB87FDF41871DAF40020F90C /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = ../../config.xml; sourceTree = "<group>"; };
-		EFE389408D9446B2AD414178 /* backgroundvideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = backgroundvideo.h; path = io.iclue.backgroundvideo/backgroundvideo.h; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "background video test/config.xml"; sourceTree = "<group>"; };
+		F3D64FD4E8194650928F869D /* backgroundvideo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "backgroundvideo.m"; path = "io.iclue.backgroundvideo/backgroundvideo.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		D0D5F157E9984DBF8CF3EB41 /* backgroundvideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "backgroundvideo.h"; path = "io.iclue.backgroundvideo/backgroundvideo.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		668B299EBA454473A01C9889 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "MediaPlayer.framework"; path = "System/Library/Frameworks/MediaPlayer.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +118,7 @@
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				305D5FD1115AB8F900A74A75 /* MobileCoreServices.framework in Frameworks */,
-				D2FFF23D814F428AAB610DE9 /* MediaPlayer.framework in Frameworks */,
+				0B10F977A6C6499E8EEEE2EB /* MediaPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,7 +191,7 @@
 				5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				305D5FD0115AB8F900A74A75 /* MobileCoreServices.framework */,
-				10065D7CD1F8481590D2460B /* MediaPlayer.framework */,
+				668B299EBA454473A01C9889 /* MediaPlayer.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -207,8 +207,8 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				DC85788B904A47E8AE518980 /* backgroundvideo.m */,
-				EFE389408D9446B2AD414178 /* backgroundvideo.h */,
+				F3D64FD4E8194650928F869D /* backgroundvideo.m */,
+				D0D5F157E9984DBF8CF3EB41 /* backgroundvideo.h */,
 			);
 			name = Plugins;
 			path = "background video test/Plugins";
@@ -398,7 +398,7 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
-				B4DC252873E24844A05AF6DC /* backgroundvideo.m in Sources */,
+				8FA64BE4965B43DC8D634087 /* backgroundvideo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

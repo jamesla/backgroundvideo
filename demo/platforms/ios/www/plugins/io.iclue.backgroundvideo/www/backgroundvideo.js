@@ -2,9 +2,9 @@ cordova.define("io.iclue.backgroundvideo.backgroundvideo", function(require, exp
 var cordova = require('cordova');
 
 var backgroundvideo = {
-    start : function(filename, camera, recordAudio, successFunction, errorFunction) {
+    start : function(filename, camera, successFunction, errorFunction, dontRecordAudio) {
     	camera = camera || 'back';
-        cordova.exec(successFunction, errorFunction, "backgroundvideo","start", [filename, camera, recordAudio]);
+        cordova.exec(successFunction, errorFunction, "backgroundvideo","start", [filename, camera, dontRecordAudio]);
     },
     stop : function(successFunction, errorFunction) {
         cordova.exec(successFunction, errorFunction, "backgroundvideo","stop", []);

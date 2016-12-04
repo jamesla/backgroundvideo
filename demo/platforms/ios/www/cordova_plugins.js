@@ -11,7 +11,7 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "io.iclue.backgroundvideo": "0.0.8"
+    "io.iclue.backgroundvideo": "0.0.9"
 }
 // BOTTOM OF METADATA
 });
