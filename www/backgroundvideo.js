@@ -1,4 +1,4 @@
-
+cordova.define("io.iclue.backgroundvideo.backgroundvideo", function(require, exports, module) { 
 var cordova = require('cordova');
 
 var backgroundvideo = {
@@ -13,3 +13,5 @@ var backgroundvideo = {
 
 module.exports = backgroundvideo;
 window.Plugin.backgroundvideo = backgroundvideo;
+
+});

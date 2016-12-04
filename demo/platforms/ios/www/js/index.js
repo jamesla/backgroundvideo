@@ -53,7 +53,7 @@ var app = {
     },
 
     start: function(facing) {
-        cordova.plugins.backgroundvideo.start('StartBtnTest-' + facing, facing, app.yay, app.boo, true);
+        cordova.plugins.backgroundvideo.start('StartBtnTest-' + facing, false, facing, app.yay, app.boo);
     },
     stop: function() {
         cordova.plugins.backgroundvideo.stop(app.yay, app.boo);
