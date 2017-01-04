@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="io.iclue.backgroundvideo" version="0.0.9" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="iclue-backgroundvideo" version="0.0.11" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>backgroundvideo</name>
     <description>A simple Cordova/Phonegap plugin to capture video and preview onscreen via a transparent overlay without affecting app functionality.</description>
-    <author>James McCallum and Josh Hayward support@iclue.io</author>
+    <author>James McCallum and Josh Hayward, support@iclue.io</author>
+    <repo>https://github.com/jamesla/backgroundvideo</repo>
 
     <engines>
-        <engine name="cordova" version=">=3.0.0" />
+        <engine name="cordova" version=">=4.0.0" />
     </engines>
 
-    <keywords>video, background, transparent, overlay, recording, camera</keywords>
+    <keywords>video, background, transparent, overlay, recording, camera, cordova</keywords>
 
     <license>GPL3</license>
 
@@ -45,17 +46,13 @@
             <uses-permission android:name="android.permission.RECORD_AUDIO" />
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-            <uses-feature android:name="android.hardware.camera" android:required="false" />
+            <uses-feature android:name="android.hardware.camera" android:required="true" />
             <uses-feature android:name="android.hardware.camera.front" android:required="false" />
             <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
         </config-file>
 
         <source-file src="src/android/BackgroundVideo.java" target-dir="src/io/iclue/backgroundvideo" />
         <source-file src="src/android/CameraHelper.java" target-dir="src/io/iclue/backgroundvideo" />
-        <source-file src="src/android/Preview.java" target-dir="src/io/iclue/backgroundvideo" />
-        <source-file src="src/android/PreviewType.java" target-dir="src/io/iclue/backgroundvideo" />
-        <source-file src="src/android/SurfaceViewPreview.java" target-dir="src/io/iclue/backgroundvideo" />
-        <source-file src="src/android/TextureViewPreview.java" target-dir="src/io/iclue/backgroundvideo" />
         <source-file src="src/android/VideoOverlay.java" target-dir="src/io/iclue/backgroundvideo" />
      </platform>
 

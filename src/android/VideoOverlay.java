@@ -1,36 +1,158 @@
 package io.iclue.backgroundvideo;
 
-
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
-import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.IOException;
 
-public class VideoOverlay extends ViewGroup {
+@SuppressWarnings("deprecation")
+public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextureListener {
     private static final String TAG = "BACKGROUND_VID_OVERLAY";
-    private final Preview preview;
-    private MediaRecorder recorder = null;
-    private Camera camera = null;
-    private int cameraId;
-    private int cameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
-    private String filePath = "";
+    private RecordingState mRecordingState = RecordingState.INITIALIZING;
 
-    private boolean inPreview = false;
-    private boolean viewIsAttached = false;
-    private Camera.Size currentSize;
+    private int mCameraId = CameraHelper.NO_CAMERA;
+    private Camera mCamera = null;
+    private final TextureView mPreview;
+    private boolean mPreviewAttached = false;
+    private MediaRecorder mRecorder = null;
+    private boolean mStartWhenInitialized = false;
 
+    private String mFilePath;
+    private boolean mRecordAudio = true;
+    private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private int mOrientation;
 
-    public VideoOverlay(Context context, String filePath) {
+    public VideoOverlay(Context context) {
         super(context);
-        this.filePath = filePath;
-        preview = getPreview();
-        addView(preview.getView());
+
+        this.setClickable(false);
+        this.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // Create surface to display the camera preview
+        mPreview = new TextureView(context);
+        mPreview.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mPreview.setClickable(false);
+        mPreview.setSurfaceTextureListener(this);
+        attachView();
+    }
+
+    public void setCameraFacing(String cameraFace) {
+        mCameraFacing = (cameraFace.equalsIgnoreCase("FRONT") ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK);
+    }
+
+    public void setRecordAudio(boolean recordAudio) {
+        mRecordAudio = recordAudio;
+    }
+
+    public void Start(String filePath) throws Exception {
+        if (this.mRecordingState == RecordingState.STARTED) {
+            Log.w(TAG, "Already Recording");
+            return;
+        }
+
+        if (!TextUtils.isEmpty(filePath)) {
+            this.mFilePath = filePath;
+        }
+
+        attachView();
+
+        if (this.mRecordingState == RecordingState.INITIALIZING) {
+            this.mStartWhenInitialized = true;
+            return;
+        }
+
+        if (TextUtils.isEmpty(mFilePath)) {
+            throw new IllegalArgumentException("Filename for recording must be set");
+        }
+
+        initializeCamera();
+
+        if (mCamera == null) {
+            this.detachView();
+            throw new NullPointerException("Cannot start recording, we don't have a camera!");
+        }
+
+        // Set camera parameters
+        Camera.Parameters cameraParameters = mCamera.getParameters();
+        mCamera.stopPreview(); //Apparently helps with freezing issue on some Samsung devices.
+        mCamera.unlock();
+
+        try {
+            mRecorder = new MediaRecorder();
+            mRecorder.setCamera(mCamera);
+
+            CamcorderProfile profile;
+            if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_LOW)) {
+                profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_LOW);
+            } else {
+                profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_HIGH);
+            }
+
+            Camera.Size lowestRes = CameraHelper.getLowestResolution(cameraParameters);
+            profile.videoFrameWidth = lowestRes.width;
+            profile.videoFrameHeight = lowestRes.height;
+
+            mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            if (mRecordAudio) {
+                // With audio
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                mRecorder.setVideoFrameRate(profile.videoFrameRate);
+                mRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
+                mRecorder.setVideoEncodingBitRate(profile.videoBitRate);
+                mRecorder.setAudioEncodingBitRate(profile.audioBitRate);
+                mRecorder.setAudioChannels(profile.audioChannels);
+                mRecorder.setAudioSamplingRate(profile.audioSampleRate);
+                mRecorder.setVideoEncoder(profile.videoCodec);
+                mRecorder.setAudioEncoder(profile.audioCodec);
+            } else {
+                // Without audio
+                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                mRecorder.setVideoFrameRate(profile.videoFrameRate);
+                mRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
+                mRecorder.setVideoEncodingBitRate(profile.videoBitRate);
+                mRecorder.setVideoEncoder(profile.videoCodec);
+            }
+
+            mRecorder.setOutputFile(filePath);
+            mRecorder.setOrientationHint(mOrientation);
+            mRecorder.prepare();
+            Log.d(TAG, "Starting recording");
+            mRecorder.start();
+        } catch (Exception e) {
+            this.releaseCamera();
+            Log.e(TAG, "Could not start recording! MediaRecorder Error", e);
+            throw e;
+        }
+    }
+
+    public String Stop() throws IOException {
+        Log.d(TAG, "stopRecording called");
+
+        if (mRecorder != null) {
+            MediaRecorder tempRecorder = mRecorder;
+            mRecorder = null;
+            try {
+                tempRecorder.stop();
+            } catch (Exception e) {
+                //This can occur when the camera failed to start and then stop is called
+                Log.e(TAG, "Could not stop recording.", e);
+            }
+        }
+
+        this.releaseCamera();
+        this.detachView();
+
+        return this.mFilePath;
     }
 
     @Override
@@ -45,234 +167,102 @@ public class VideoOverlay extends ViewGroup {
         }
     }
 
-    public boolean isRecording() {
-        return recorder != null;
-    }
-
-    public void startRecording() throws Exception {
-        if (isRecording()) {
-            Log.d(TAG, "Already Recording!");
-            return;
-        }
-
-        initCamera();
-
-        if (camera == null)
-            throw new NullPointerException("Cannot start recording, we don't have a camera!");
-
-        Camera.Parameters cameraParameters = camera.getParameters();
-
-        if(currentSize == null){
-            setCameraParameters(camera, cameraParameters);
-        }
-
-        camera.stopPreview(); //Apparently helps with freezing issue on some Samsung devices.
-        camera.unlock();
-
-        try {
-            recorder = new MediaRecorder();
-            recorder.setCamera(camera);
-
-
-            recorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-            recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-            setProfile(recorder, cameraParameters);
-            recorder.setOutputFile(filePath);
-            recorder.setOrientationHint(90);
-
-            preview.attach(recorder);
-            recorder.prepare();
-            recorder.start();
-        }
-        catch (Exception e){
-            recorder.reset();
-            recorder.release();
-            recorder=null;
-            camera.lock();
-            Log.e(TAG, "Could not start recording! MediaRecorder Error", e);
-            throw e;
-        }
-    }
-
-    public void stopRecording() throws IOException {
-        Log.d(TAG, "stopRecording called");
-
-        if(recorder != null) {
-            MediaRecorder tempRecorder = recorder;
-            recorder = null;
+    private void initializeCamera() {
+        if (mCamera == null) {
             try {
-                tempRecorder.stop();
-            } catch (Exception e){
-                //This occurs when the camera failed to start and then stop is called
-                Log.e(TAG, "Could not call stopRecording.", e);
-            }
-            tempRecorder.reset();
-            tempRecorder.release();
+                mCameraId = CameraHelper.getCameraId(mCameraFacing);
+                if (mCameraId != CameraHelper.NO_CAMERA) {
+                    mCamera = Camera.open(mCameraId);
 
-            if(camera != null) {
-                camera.lock();
-            }
-        }
-    }
+                    // Set camera parameters
+                    mOrientation = CameraHelper.calculateOrientation((Activity) this.getContext(), mCameraId);
+                    Camera.Parameters cameraParameters = mCamera.getParameters();
+                    Camera.Size previewSize = CameraHelper.getPreviewSize(cameraParameters);
+                    cameraParameters.setPreviewSize(previewSize.width, previewSize.height);
+                    cameraParameters.setRotation(mOrientation);
+                    cameraParameters.setRecordingHint(true);
 
-    private void initCamera(){
-        if (camera == null) {
-            // Find the total number of cameras available
-            int mNumberOfCameras = Camera.getNumberOfCameras();
-
-            // Find the ID of the back-facing ("default") camera
-            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-            for (int i = 0; i < mNumberOfCameras; i++) {
-                Camera.getCameraInfo(i, cameraInfo);
-                if (cameraInfo.facing == cameraFacing) {
-                    cameraId = i;
-                    camera = Camera.open(i);
-                    return;
+                    mCamera.setParameters(cameraParameters);
+                    mCamera.setDisplayOrientation(mOrientation);
                 }
+            } catch (RuntimeException ex) {
+                this.releaseCamera();
+                Log.e(TAG, "Unable to open camera. Another application probably has a lock", ex);
             }
-            cameraId = -1;
-            camera = null;
         }
     }
 
-    private Preview getPreview() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            return new TextureViewPreview(this);
-        else
-            return new SurfaceViewPreview(this);
+    private void releaseCamera() {
+        if (mRecorder != null) {
+            mRecorder.reset();
+            mRecorder.release();
+            mRecorder = null;
+        }
+        if (mCamera != null) {
+            mCamera.setPreviewCallback(null);
+            mCamera.stopPreview();
+            mCamera.lock();
+            mCamera.release();
+            mCamera = null;
+            mCameraId = CameraHelper.NO_CAMERA;
+        }
+        this.mRecordingState = RecordingState.STOPPED;
     }
 
-    void previewAvailable(){
-        viewIsAttached = true;
-        initCamera();
-        if(camera != null) {
+    private void attachView() {
+        if (!mPreviewAttached && mPreview != null) {
+            this.addView(mPreview);
+            this.mPreviewAttached = true;
+        }
+    }
+
+    private void detachView() {
+        if (mPreviewAttached && mPreview != null) {
+            this.removeView(mPreview);
+            this.mPreviewAttached = false;
+            this.mRecordingState = RecordingState.INITIALIZING;
+        }
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        Log.d(TAG, "Creating Texture Created");
+
+        this.mRecordingState = RecordingState.STOPPED;
+
+        initializeCamera();
+
+        if (mCamera != null) {
             try {
-                preview.attach(camera);
+                mCamera.setPreviewTexture(surface);
             } catch (IOException e) {
                 Log.e(TAG, "Unable to attach preview to camera!", e);
             }
-        }
-    }
-
-    public void initPreview(int height, int width) {
-        if (camera != null) {
-            Camera.Parameters parameters = camera.getParameters();
-
-            setCameraParameters(camera, parameters);
-
-            camera.startPreview();
-            inPreview = true;
-        }
-    }
-
-    private void setCameraParameters(Camera camera, Camera.Parameters parameters){
-        currentSize = CameraHelper.getPreviewSize(parameters);
-        parameters.setPreviewSize(currentSize.width, currentSize.height);
-
-        parameters.setRotation(90);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            parameters.setRecordingHint(true);
+            mCamera.startPreview();
         }
 
-        camera.setParameters(parameters);
-        camera.setDisplayOrientation(90);
-    }
-
-    private void setProfile(MediaRecorder mediaRecorder, Camera.Parameters parameters){
-        CamcorderProfile profile;
-
-        if(CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_LOW)) {
-            profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_LOW);
-        } else {
-            profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_HIGH);
-        }
-
-        if(currentSize == null){
-            currentSize = CameraHelper.getLowestResolution(parameters);
-        }
-
-
-        profile.videoFrameWidth = currentSize.width;
-        profile.videoFrameHeight = currentSize.height;
-
-        mediaRecorder.setProfile(profile);
-    }
-
-
-    public void startPreview(boolean startRecording){
-        if(!inPreview) {
-            if(preview != null && !viewIsAttached ) {
-                preview.startRecordingWhenAvailable(startRecording);
-                addView(preview.getView());
-            } else {
-                previewAvailable();
-                initPreview(getHeight(), getWidth());
-                if (startRecording)
-                    try {
-                        startRecording();
-                    } catch (Exception e) {
-                        Log.e(TAG, "Could not start recording", e);
-                    }
-                inPreview = true;
+        if (mStartWhenInitialized) {
+            try {
+                Start(this.mFilePath);
+            } catch (Exception ex) {
+                Log.e(TAG, "Error start camera", ex);
             }
         }
     }
 
-    public void stopPreview() {
-        Log.d(TAG, "stopPreview called");
-        if (inPreview && camera != null) {
-            camera.setPreviewCallback(null);
-            camera.stopPreview();
-        }
-
-        if(camera != null) {
-            camera.lock();
-            camera.release();
-            camera = null;
-        }
-
-        inPreview = false;
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
     }
 
-    public void setCameraFacing(String cameraFace) {
-        cameraFacing = ( cameraFace.equalsIgnoreCase("FRONT") ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK );
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        return false;
     }
 
-    public void onResume() {
-        addView(preview.getView());
-        viewIsAttached = true;
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
     }
 
-    public void onPause() {
-        try {
-            Log.d(TAG, "onPause called");
-            stopRecording();
-            stopPreview();
-            preview.startRecordingWhenAvailable(false);
-            Log.d(TAG, "removing View");
-            if(preview != null) {
-                removeView(preview.getView());
-            }
-            viewIsAttached = false;
-        } catch (IOException e) {
-            Log.e(TAG, "Error in OnPause - Could not stop camera", e);
-        }
-    }
 
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy called");
-        onPause();
-    }
-
-    public PreviewType getViewType(){
-        if (preview != null)
-            return preview.getPreviewType();
-        return PreviewType.NONE;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
+    private enum RecordingState {INITIALIZING, STARTED, STOPPED}
 }
