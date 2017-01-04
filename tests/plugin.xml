@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="iclue-backgroundvideo-tests"
+    version="0.0.11">
+    <name>Iclue Background Video Cordova Plugin Tests</name>
+    <license>GPL3</license>
+
+    <dependency id="iclue-backgroundvideo" version=">=0.0.11" />
+
+    <js-module src="tests.js" name="tests">
+    </js-module>
+</plugin>
