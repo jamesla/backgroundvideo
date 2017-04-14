@@ -1,6 +1,6 @@
-# Backgroundvideo
+#cordova-background-video
 
-##### A simple Cordova/Phonegap plugin to capture video and then display it onscreen via a transparent overlay without affecting app functionality.
+#####A simple Cordova/Phonegap plugin to capture video and then display it onscreen via a transparent overlay without affecting app functionality.
 
 
 ##How to use
@@ -23,6 +23,8 @@ cordova.plugins.backgroundvideo.start('cacheDirectory', 'myvideo', 'front', 'med
 cordova.plugins.backgroundvideo.stop(successFn, errorFn);
 ```
 ###Other bits
+**Quality**
+Can be medium, low, high
 **Camera**
 'front' or 'back' to specify camera direction.
 
@@ -30,12 +32,12 @@ cordova.plugins.backgroundvideo.stop(successFn, errorFn);
 - Outputs as mp4. You do not need to specify file extension.
 - Video files are saved to approot/tmp folder (cordova.plugins.backgroundvideo.stop() will return the file path).
 
-### File System Layouts
+###File System Layouts
 
 Although technically an implementation detail, it can be very useful to know how
 the `cordova.file.*` properties map to physical paths on a real device.
 
-#### iOS File System Layout
+####iOS File System Layout
 
 | Device Path                                    | `cordova.file.*`            | `iosExtraFileSystems` | r/w? | persistent? | OS clears | sync | private |
 |:-----------------------------------------------|:----------------------------|:----------------------|:----:|:-----------:|:---------:|:----:|:-------:|
@@ -51,7 +53,7 @@ the `cordova.file.*` properties map to physical paths on a real device.
 | &nbsp;&nbsp;&nbsp;`tmp/`                       | tempDirectory               | -                     | r/w  |     No\*\*  |  Yes\*\*\*| No   |   Yes   |
 
 
-#### Android File System Layout
+####Android File System Layout
 
 | Device Path                                     | `cordova.file.*`            | `AndroidExtraFileSystems` | r/w? | persistent? | OS clears | private |
 |:------------------------------------------------|:----------------------------|:--------------------------|:----:|:-----------:|:---------:|:-------:|
