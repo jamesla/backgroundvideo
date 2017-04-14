@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="iclue-backgroundvideo" version="0.0.11" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
-  <name>backgroundvideo</name>
-  <description>A simple Cordova/Phonegap plugin to capture video and preview onscreen via a transparent overlay without affecting app functionality.</description>
+<plugin id="cordova-background-video" version="0.0.11" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>cordova-background-video</name>
+  <description>A simple Cordova/Phonegap plugin to capture video and preview background affecting app functionality.</description>
   <author>James McCallum and Josh Hayward, support@iclue.io</author>
-  <repo>https://github.com/jamesla/backgroundvideo</repo>
+  <repo>https://github.com/mlingos/backgroundvideo</repo>
 
   <engines>
     <engine name="cordova" version=">=4.0.0" />
   </engines>
 
-  <keywords>video, background, transparent, overlay, recording, camera, cordova</keywords>
+  <keywords>video, background, transparent, recording, camera, cordova</keywords>
 
   <license>GPL3</license>
 
@@ -45,7 +45,7 @@
 
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="backgroundvideo">
-        <param name="android-package" value="io.iclue.backgroundvideo.BackgroundVideo"/>
+        <param name="android-package" value="cordova.background.video.BackgroundVideo"/>
       </feature>
     </config-file>
 

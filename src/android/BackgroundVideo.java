@@ -1,4 +1,4 @@
-package io.iclue.backgroundvideo;
+package cordova.background.video;
 
 import android.content.pm.PackageManager;
 import android.util.DisplayMetrics;
