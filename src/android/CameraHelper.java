@@ -1,4 +1,4 @@
-package io.iclue.backgroundvideo;
+package cordova.background.video;
 
 import android.app.Activity;
 import android.hardware.Camera;
