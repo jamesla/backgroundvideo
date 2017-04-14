@@ -10,13 +10,6 @@
 @synthesize webView;
 #endif
 
-//no longer needed for cordova platform 4+
-// -(CDVPlugin*) initWithWebView:(UIWebView*)theWebView
-// {
-//     self = (backgroundvideo*)[super initWithWebView:theWebView];
-//     return self;
-// }
-
 #pragma mark -
 #pragma mark backgroundvideo
 
@@ -24,10 +17,9 @@
 {
     //stop the device from being able to sleep
     [UIApplication sharedApplication].idleTimerDisabled = YES;
-
-    self.token = [command.arguments objectAtIndex:0];
-    self.camera = [command.arguments objectAtIndex:1];
-    bool shouldRecordAudio = [[command.arguments objectAtIndex:2] boolValue];
+    //fileStorage, filename, camera, quality
+    self.token = [command.arguments objectAtIndex:1];
+    self.camera = [command.arguments objectAtIndex:2];
 
     //get rid of the old view (causes issues if the app is resumed)
     self.parentView = nil;
@@ -55,7 +47,7 @@
 
     //Capture session
     session = [[AVCaptureSession alloc] init];
-    [session setSessionPreset:AVCaptureSessionPresetLow];
+    [session setSessionPreset:AVCaptureSessionPresetMedium];
 
     //Get the front camera and set the capture device
     AVCaptureDevice *inputDevice = [self getCamera: self.camera];
@@ -75,17 +67,12 @@
     if ( [session canAddOutput:output])
         [session addOutput:output];
 
-    if(shouldRecordAudio){
-        
-        //Capture audio input
-        AVCaptureDevice *audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-        AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioCaptureDevice error:nil];
+    //Capture audio input
+    AVCaptureDevice *audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+    AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioCaptureDevice error:nil];
 
-        if ([session canAddInput:audioInput])
-            [session addInput:audioInput];
-    
-    }
-
+    if ([session canAddInput:audioInput])
+        [session addInput:audioInput];
 
     //Capture device input
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:inputDevice error:nil];

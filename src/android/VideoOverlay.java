@@ -27,7 +27,6 @@ public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextur
     private boolean mStartWhenInitialized = false;
 
     private String mFilePath;
-    private boolean mRecordAudio = true;
     private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
     private int mOrientation;
 
@@ -47,10 +46,6 @@ public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextur
 
     public void setCameraFacing(String cameraFace) {
         mCameraFacing = (cameraFace.equalsIgnoreCase("FRONT") ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK);
-    }
-
-    public void setRecordAudio(boolean recordAudio) {
-        mRecordAudio = recordAudio;
     }
 
     public void Start(String filePath) throws Exception {
@@ -91,10 +86,10 @@ public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextur
             mRecorder.setCamera(mCamera);
 
             CamcorderProfile profile;
-            if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_LOW)) {
-                profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_LOW);
+            if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_480P)) {
+                profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_480P);
             } else {
-                profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_HIGH);
+                profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_LOW);
             }
 
             Camera.Size lowestRes = CameraHelper.getLowestResolution(cameraParameters);
@@ -102,26 +97,17 @@ public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextur
             profile.videoFrameHeight = lowestRes.height;
 
             mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-            if (mRecordAudio) {
-                // With audio
-                mRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                mRecorder.setVideoFrameRate(profile.videoFrameRate);
-                mRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
-                mRecorder.setVideoEncodingBitRate(profile.videoBitRate);
-                mRecorder.setAudioEncodingBitRate(profile.audioBitRate);
-                mRecorder.setAudioChannels(profile.audioChannels);
-                mRecorder.setAudioSamplingRate(profile.audioSampleRate);
-                mRecorder.setVideoEncoder(profile.videoCodec);
-                mRecorder.setAudioEncoder(profile.audioCodec);
-            } else {
-                // Without audio
-                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                mRecorder.setVideoFrameRate(profile.videoFrameRate);
-                mRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
-                mRecorder.setVideoEncodingBitRate(profile.videoBitRate);
-                mRecorder.setVideoEncoder(profile.videoCodec);
-            }
+            // With audio
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setVideoFrameRate(profile.videoFrameRate);
+            mRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
+            mRecorder.setVideoEncodingBitRate(profile.videoBitRate);
+            mRecorder.setAudioEncodingBitRate(profile.audioBitRate);
+            mRecorder.setAudioChannels(profile.audioChannels);
+            mRecorder.setAudioSamplingRate(profile.audioSampleRate);
+            mRecorder.setVideoEncoder(profile.videoCodec);
+            mRecorder.setAudioEncoder(profile.audioCodec);
 
             mRecorder.setOutputFile(filePath);
             mRecorder.setOrientationHint(mOrientation);

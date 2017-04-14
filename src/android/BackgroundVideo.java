@@ -49,13 +49,12 @@ public class BackgroundVideo extends CordovaPlugin {
             Log.d(TAG, "ACTION: " + action);
 
             if (ACTION_START_RECORDING.equalsIgnoreCase(action)) {
-                boolean recordAudio = args.getBoolean(2);
 
                 List<String> permissions = new ArrayList<String>();
                 if (!cordova.hasPermission(android.Manifest.permission.CAMERA)) {
                     permissions.add(android.Manifest.permission.CAMERA);
                 }
-                if (recordAudio && !cordova.hasPermission(android.Manifest.permission.RECORD_AUDIO)) {
+                if (!cordova.hasPermission(android.Manifest.permission.RECORD_AUDIO)) {
                     permissions.add(android.Manifest.permission.RECORD_AUDIO);
                 }
                 if (permissions.size() > 0) {
@@ -96,9 +95,9 @@ public class BackgroundVideo extends CordovaPlugin {
     }
 
     private void Start(JSONArray args) throws JSONException {
-        final String filename = args.getString(0);
-        final String cameraFace = args.getString(1);
-        final boolean recordAudio = args.getBoolean(2);
+        // params fileStorage, filename, camera, quality
+        final String filename = args.getString(1);
+        final String cameraFace = args.getString(2);
 
         if (videoOverlay == null) {
             videoOverlay = new VideoOverlay(cordova.getActivity()); //, getFilePath());
@@ -129,7 +128,6 @@ public class BackgroundVideo extends CordovaPlugin {
         }
 
         videoOverlay.setCameraFacing(cameraFace);
-        videoOverlay.setRecordAudio(recordAudio);
 
         cordova.getActivity().runOnUiThread(new Runnable() {
             @Override

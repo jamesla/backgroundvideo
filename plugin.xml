@@ -2,7 +2,7 @@
 <plugin id="cordova-background-video" version="0.0.11" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
   <name>cordova-background-video</name>
   <description>A simple Cordova/Phonegap plugin to capture video and preview background affecting app functionality.</description>
-  <author>James McCallum and Josh Hayward, support@iclue.io</author>
+  <author>James McCallum and Josh Hayward (support@iclue.io) and mLingos (github@mlingos.com)</author>
   <repo>https://github.com/mlingos/backgroundvideo</repo>
 
   <engines>
@@ -25,13 +25,13 @@
       </feature>
     </config-file>
 
-    <preference name="CAMERA_USAGE_DESCRIPTION" default=" " />
+    <preference name="CAMERA_USAGE_DESCRIPTION" default="Use for video messages" />
     <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
       <string>Backgroundvideo cordova plugin</string>
     </config-file>
 
     <preference name="MICROPHONE_USAGE_DESCRIPTION" default=" " />
-    <config-file target="*-Info.plist" parent="NSMicrophoneUsageDescription">
+    <config-file target="*-Info.plist" parent="Use for video and audio messages">
       <string>Backgroundvideo cordova plugin</string>
     </config-file>
 
