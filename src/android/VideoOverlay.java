@@ -29,6 +29,7 @@ public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextur
     private String mFilePath;
     private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
     private int mOrientation;
+    private int mOrientationHint;
 
     public VideoOverlay(Context context) {
         super(context);
@@ -128,7 +129,7 @@ public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextur
             mRecorder.setAudioEncoder(profile.audioCodec);
 
             mRecorder.setOutputFile(filePath);
-            mRecorder.setOrientationHint(mOrientation);
+            mRecorder.setOrientationHint(mOrientationHint);
             mRecorder.prepare();
             Log.d(TAG, "Starting recording");
             mRecorder.start();
@@ -180,6 +181,7 @@ public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextur
 
                     // Set camera parameters
                     mOrientation = CameraHelper.calculateOrientation((Activity) this.getContext(), mCameraId);
+                    mOrientationHint = CameraHelper.calculateOrientationHint((Activity) this.getContext(), mCameraId);
                     Camera.Parameters cameraParameters = mCamera.getParameters();
                     Camera.Size previewSize = CameraHelper.getPreviewSize(cameraParameters);
                     cameraParameters.setPreviewSize(previewSize.width, previewSize.height);
