@@ -20,20 +20,21 @@ class CameraHelper {
         return size;
     }
 
-    static Camera.Size getLowestResolution(Camera.Parameters cp) {
+    static Camera.Size getBestResolution(Camera.Parameters cp) {
         List<Camera.Size> sl = cp.getSupportedVideoSizes();
 
         if (sl == null)
             sl = cp.getSupportedPictureSizes();
 
-        Camera.Size small = sl.get(0);
+        Camera.Size large = sl.get(0);
 
         for (Camera.Size s : sl) {
-            if ((s.height * s.width) < (small.height * small.width))
-                small = s;
+            if ((large.height * large.width) < (s.height * s.width)) {
+                large = s;
+            }
         }
 
-        return small;
+        return large;
     }
 
     static int getCameraId(int position) {
