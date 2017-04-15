@@ -61,9 +61,9 @@
       <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     </config-file>
 
-    <source-file src="src/android/BackgroundVideo.java" target-dir="src/io/iclue/backgroundvideo" />
-    <source-file src="src/android/CameraHelper.java" target-dir="src/io/iclue/backgroundvideo" />
-    <source-file src="src/android/VideoOverlay.java" target-dir="src/io/iclue/backgroundvideo" />
+    <source-file src="src/android/BackgroundVideo.java" target-dir="src/cordova/background/video" />
+    <source-file src="src/android/CameraHelper.java" target-dir="src/cordova/background/video" />
+    <source-file src="src/android/VideoOverlay.java" target-dir="src/cordova/background/video" />
   </platform>
 
 
