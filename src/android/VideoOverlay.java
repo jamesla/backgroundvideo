@@ -88,13 +88,31 @@ public class VideoOverlay extends ViewGroup implements TextureView.SurfaceTextur
             CamcorderProfile profile;
             if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_480P)) {
                 profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_480P);
+                profile.videoFrameWidth = 720;
+                profile.videoFrameHeight = 480;
+                Log.w(TAG, "QUALITY_480P");
             } else {
-                profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_LOW);
+                if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_720P)) {
+                    profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_720P);
+                    profile.videoFrameWidth = 1280;
+                    profile.videoFrameHeight = 720;
+                    Log.w(TAG, "QUALITY_720P");
+                } else {
+                    if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_1080P)) {
+                      profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_1080P);
+                      profile.videoFrameWidth = 1920;
+                      profile.videoFrameHeight = 1080;
+                      Log.w(TAG, "QUALITY_1080P");
+                    } else {
+                      profile = CamcorderProfile.get(mCameraId, CamcorderProfile.QUALITY_LOW);
+                      Camera.Size lowestRes = CameraHelper.getBestResolution(cameraParameters);
+                      profile.videoFrameWidth = lowestRes.width;
+                      profile.videoFrameHeight = lowestRes.height;
+                      Log.w(TAG, "QUALITY_LOW");
+                    }
+                }
             }
 
-            Camera.Size lowestRes = CameraHelper.getLowestResolution(cameraParameters);
-            profile.videoFrameWidth = lowestRes.width;
-            profile.videoFrameHeight = lowestRes.height;
 
             mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
             // With audio
