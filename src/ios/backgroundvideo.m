@@ -111,7 +111,7 @@
 {
     int fileNameIncrementer = 1;
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *libPath = [self getLibraryPath];
+    NSString *libPath = [self getCachePath];
 
     NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
 
@@ -128,6 +128,12 @@
     NSArray *lib = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
     NSString *library = [lib objectAtIndex:0];
     return [NSString stringWithFormat:@"%@/NoCloud/", library];
+}
+
+-(NSString*)getCachePath
+{
+    NSString* cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+    return [NSString stringWithFormat:@"%@/", cachePath];
 }
 
 -(AVCaptureDevice *)getCamera: (NSString *)camera
