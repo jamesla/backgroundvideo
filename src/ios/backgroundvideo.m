@@ -13,6 +13,12 @@
 #pragma mark -
 #pragma mark backgroundvideo
 
+-(void) pluginInitialize{
+  // start as transparent
+  self.webView.opaque = NO;
+  self.webView.backgroundColor = [UIColor clearColor];
+}
+
 - (void) start:(CDVInvokedUrlCommand *)command
 {
     //stop the device from being able to sleep
