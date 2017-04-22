@@ -37,8 +37,8 @@ public class BackgroundVideo extends CordovaPlugin {
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        FILE_PATH = Environment.getExternalStorageDirectory().toString() + "/";
-        // FILE_PATH = cordova.getActivity().getCacheDir().toString() + "/";
+        // FILE_PATH = Environment.getExternalStorageDirectory().toString() + "/";
+        FILE_PATH = cordova.getActivity().getCacheDir().toString() + "/";
         // FILE_PATH = cordova.getActivity().getFilesDir().toString() + "/";
         //FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString() + "/";
     }
@@ -123,6 +123,7 @@ public class BackgroundVideo extends CordovaPlugin {
 
                         webView.getView().setBackgroundColor(0x00000000);
                         ((ViewGroup)webView.getView()).bringToFront();
+                        callbackContext.success();
                     } catch (Exception e) {
                         Log.e(TAG, "Error during preview create", e);
                         callbackContext.error(TAG + ": " + e.getMessage());
