@@ -119,7 +119,7 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *libPath = [self getCachePath];
 
-    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
+    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@%@", libPath, self.token, FileExtension];
 
     while ([fileManager fileExistsAtPath:tempPath]) {
         tempPath = [NSString stringWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
