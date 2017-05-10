@@ -68,6 +68,7 @@
 
     output = [[AVCaptureMovieFileOutput alloc]init];
     output.maxRecordedDuration = maxDuration;
+    output.movieFragmentInterval = kCMTimeInvalid;
 
 
     if ( [session canAddOutput:output])
