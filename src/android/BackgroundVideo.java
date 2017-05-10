@@ -123,7 +123,6 @@ public class BackgroundVideo extends CordovaPlugin {
 
                         webView.getView().setBackgroundColor(0x00000000);
                         ((ViewGroup)webView.getView()).bringToFront();
-                        callbackContext.success();
                     } catch (Exception e) {
                         Log.e(TAG, "Error during preview create", e);
                         callbackContext.error(TAG + ": " + e.getMessage());
@@ -139,6 +138,7 @@ public class BackgroundVideo extends CordovaPlugin {
             public void run() {
                 try {
                     videoOverlay.Start(getFilePath(filename));
+                    callbackContext.success();
                 } catch (Exception e) {
                     e.printStackTrace();
                     callbackContext.error(e.getMessage());
