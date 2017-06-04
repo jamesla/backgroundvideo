@@ -3,26 +3,26 @@
 ##### A simple Cordova/Phonegap plugin to capture video and then display it onscreen via a transparent overlay without affecting app functionality.
 
 
-##How to use
-###Install
+# How to use
+### Install
 ```
 cordova plugin add https://github.com/jamesla/backgroundvideo.git
 ```
-###Usage
+### Usage
 ```
 cordova.plugins.backgroundvideo.start(filename, cameradirection, shouldRecordAudio, successfn, errorfn);
 ```
 
-###Getting started
-######start recording
+# Getting started
+###### start recording
 ```
 cordova.plugins.backgroundvideo.start('myvideo', 'front', true, null, null);
 ```
-######stop recording
+###### stop recording
 ```
 cordova.plugins.backgroundvideo.stop(successFn, errorFn);
 ```
-###Other bits
+### Other bits
 **Camera**
 'front' or 'back' to specify camera direction.
 
@@ -30,8 +30,8 @@ cordova.plugins.backgroundvideo.stop(successFn, errorFn);
 - Outputs as mp4. You do not need to specify file extension.
 - Video files are saved to approot/tmp folder (cordova.plugins.backgroundvideo.stop() will return the file path).
 
-###Support
+### Support
 Please use the github issue tracker and we will come back to you as soon as we can.
 
-###Contribution
+### Contribution
 There's lots of Android phones all with their own quirks so we'd love it if you could contribute and help us support all of the devices out there.
