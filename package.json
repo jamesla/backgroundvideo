@@ -1,0 +1,6 @@
+{
+    "name": "backgroundvideo",
+    "displayName": "Backgroundvideo",
+    "version": "0.11.0",
+    "description": "A plugin for recording video and overlaying it over an app"
+}
